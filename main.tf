@@ -8,7 +8,7 @@ resource "google_compute_disk" "foobar" {
 resource "google_compute_instance_template" "default" {
   name         = "appserver-template"
   description  = "This template is used to create app server instances."
-  machine_type = "e2-medium"
+  machine_type = "n1-standard-1"
 
   network_interface {
     network = "default"
