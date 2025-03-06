@@ -1,7 +1,6 @@
 provider "google" {
   project     = "natural-region-452705-m6"
   region      = "us-central1"
-  credentials = file("${path.module}/credentials.json")
 }
 
 provider "aws" {
