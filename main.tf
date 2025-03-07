@@ -1,9 +1,3 @@
-provider "aws" {
-  region     = "us-east-1"
-  access_key = "AKIAZI2LIKSNP4WGTTNB"
-  secret_key = "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"
-}
-
 resource "google_project_service" "storage_transfer" {
   project = "natural-region-452705-m6"
   service = "storagetransfer.googleapis.com"
