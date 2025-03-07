@@ -23,7 +23,7 @@ data "google_storage_transfer_project_service_account" "default" {
 
 resource "google_storage_bucket" "gcs_bucket" {
   count         = 2
-  name          = "gcsbucket${count.index}"
+  name          = "gdhan${count.index}"
   location      = "US"
   storage_class = "STANDARD"
 }
@@ -46,7 +46,7 @@ resource "google_storage_bucket_iam_member" "storage_transfer_service_account" {
 
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
-  bucket = "s3buckets-${count.index}"
+  bucket = "s3dhan-${count.index}"
 
   lifecycle {
     ignore_changes = [
