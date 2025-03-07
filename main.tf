@@ -1,7 +1,7 @@
 provider "aws" {
   region     = "us-east-1"
-  access_key = "AKIAZI2LIKSNM67H7DG6"
-  secret_key = "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"
+  access_key = "AKIAZI2LIKSNP4WGTTNB"
+  secret_key = "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"
 }
 
 resource "google_project_service" "storage_transfer" {
