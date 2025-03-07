@@ -44,7 +44,6 @@ resource "google_storage_bucket_iam_member" "storage_transfer_service_account" {
   depends_on = [google_storage_bucket.gcs_bucket]
 }
 
-/*
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
   bucket = "s3dhan-${count.index}"
@@ -55,7 +54,6 @@ resource "aws_s3_bucket" "s3_bucket" {
     ]
   }
 }
-*/
 
 resource "google_storage_transfer_job" "s3_to_gcs" {
   count       = 2
