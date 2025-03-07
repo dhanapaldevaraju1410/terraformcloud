@@ -13,6 +13,7 @@ resource "google_pubsub_topic_iam_member" "publisher" {
   topic   = google_pubsub_topic.transfer_notifications.name
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:project-494690071564@storage-transfer-service.iam.gserviceaccount.com"
+  depends_on = [google_pubsub_topic.transfer_notifications]
 }
 
 data "google_storage_transfer_project_service_account" "default" {
@@ -22,7 +23,7 @@ data "google_storage_transfer_project_service_account" "default" {
 
 resource "google_storage_bucket" "gcs_bucket" {
   count         = 2
-  name          = "dhanapal141${count.index}"
+  name          = "gcsbuck${count.index}"
   location      = "US"
   storage_class = "STANDARD"
 }
@@ -32,6 +33,7 @@ resource "google_storage_bucket_iam_member" "gcs_bucket" {
   bucket   = each.key
   role     = "roles/storage.admin"
   member   = "serviceAccount:${data.google_storage_transfer_project_service_account.default.email}"
+  depends_on = [google_storage_bucket.gcs_bucket, data.google_storage_transfer_project_service_account.default]
 }
 
 resource "google_storage_bucket_iam_member" "storage_transfer_service_account" {
@@ -39,11 +41,18 @@ resource "google_storage_bucket_iam_member" "storage_transfer_service_account" {
   bucket   = each.key
   role     = "roles/storage.objectViewer"
   member   = "serviceAccount:project-494690071564@storage-transfer-service.iam.gserviceaccount.com"
+  depends_on = [google_storage_bucket.gcs_bucket]
 }
 
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
-  bucket = "my-bucket-${count.index + 1}"
+  bucket = "s3buckd-${count.index}"
+
+  lifecycle {
+    ignore_changes = [
+      bucket
+    ]
+  }
 }
 
 resource "google_storage_transfer_job" "s3_to_gcs" {
@@ -55,8 +64,8 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
       aws_access_key {
-        access_key_id     = "AKIAZI2LIKSNE3LGSIIE"
-        secret_access_key = "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"
+        access_key_id     = "AKIAZI2LIKSNABYWXWEH"
+        secret_access_key = "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"
       }
     }
 
@@ -85,5 +94,11 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
     event_types    = ["TRANSFER_OPERATION_SUCCESS", "TRANSFER_OPERATION_FAILED"]
     payload_format = "JSON"
   }
+
+  depends_on = [
+    aws_s3_bucket.s3_bucket,
+    google_storage_bucket.gcs_bucket,
+    google_pubsub_topic.transfer_notifications
+  ]
 }
 
