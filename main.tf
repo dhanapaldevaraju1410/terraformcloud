@@ -28,15 +28,15 @@ resource "google_storage_bucket" "gcs_bucket" {
 }
 
 resource "google_storage_bucket_iam_member" "gcs_bucket" {
-  for_each = google_storage_bucket.gcs_bucket
-  bucket   = each.value.name
+  for_each = { for idx, bucket in google_storage_bucket.gcs_bucket : bucket.name => bucket.name }
+  bucket   = each.key
   role     = "roles/storage.admin"
   member   = "serviceAccount:${data.google_storage_transfer_project_service_account.default.email}"
 }
 
 resource "google_storage_bucket_iam_member" "storage_transfer_service_account" {
-  for_each = google_storage_bucket.gcs_bucket
-  bucket   = each.value.name
+  for_each = { for idx, bucket in google_storage_bucket.gcs_bucket : bucket.name => bucket.name }
+  bucket   = each.key
   role     = "roles/storage.objectViewer"
   member   = "serviceAccount:project-494690071564@storage-transfer-service.iam.gserviceaccount.com"
 }
