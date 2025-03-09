@@ -1,29 +1,29 @@
 provider "google" {
-  project     = var.project
-  region      = var.region
-  credentials = file(var.credentials)
+  project     = "natural-region-452705-m6"
+  region      = "us-central1"
+  credentials = "${path.module}/credentials.json"
 }
 
 resource "google_project_service" "storage_transfer" {
-  project = var.project
+  project = "natural-region-452705-m6"
   service = "storagetransfer.googleapis.com"
 }
 
 resource "google_pubsub_topic" "transfer_notifications" {
-  name    = var.pubsub_topic_name
-  project = var.project
+  name    = "pubsub1414"
+  project = "natural-region-452705-m6"
 }
 
 resource "google_pubsub_topic_iam_member" "publisher" {
-  project = var.project
+  project = "natural-region-452705-m6"
   topic   = google_pubsub_topic.transfer_notifications.name
   role    = "roles/pubsub.publisher"
-  member  = "serviceAccount:${var.storage_transfer_service_account}"
+  member  = "serviceAccount:project-494690071564@storage-transfer-service.iam.gserviceaccount.com"
   depends_on = [google_pubsub_topic.transfer_notifications]
 }
 
 data "google_storage_transfer_project_service_account" "default" {
-  project    = var.project
+  project    = "natural-region-452705-m6"
   depends_on = [google_project_service.storage_transfer]
 }
 
@@ -33,6 +33,7 @@ resource "google_storage_bucket" "gcs_bucket" {
   location      = "US"
   storage_class = "STANDARD"
 }
+
 
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
@@ -51,22 +52,19 @@ resource "google_storage_bucket_iam_member" "storage_transfer_service_account" {
   for_each = { for idx, bucket in google_storage_bucket.gcs_bucket : bucket.name => bucket.name }
   bucket   = each.key
   role     = "roles/storage.objectViewer"
-  member   = "serviceAccount:${var.storage_transfer_service_account}"
+  member   = "serviceAccount:project-494690071564@storage-transfer-service.iam.gserviceaccount.com"
   depends_on = [google_storage_bucket.gcs_bucket]
 }
 
 resource "google_storage_transfer_job" "s3_to_gcs" {
   count       = 2
   description = "Transfer data from S3 to GCS"
-  project     = var.project
+  project     = "natural-region-452705-m6"
 
   transfer_spec {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
-      aws_access_key {
-        access_key_id     = var.aws_access_key_id
-        secret_access_key = var.aws_secret_access_key
-      }
+}
     }
 
     gcs_data_sink {
@@ -76,15 +74,15 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
 
   schedule {
     schedule_start_date {
-      year  = var.schedule_start_year
-      month = var.schedule_start_month
-      day   = var.schedule_start_day
+      year  = 2025
+      month = 3
+      day   = 7
     }
 
     start_time_of_day {
-      hours   = var.schedule_start_hour
-      minutes = var.schedule_start_minute
-      seconds = var.schedule_start_second
+      hours   = 6
+      minutes = 15
+      seconds = 0
       nanos   = 0
     }
   }
