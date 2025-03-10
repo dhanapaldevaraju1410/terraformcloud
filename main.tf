@@ -1,5 +1,6 @@
 provider "aws" {
-  region     = "us-west-2"
+  region  = "us-west-2"
+  version = "3.7.1"
 }
 
 provider "google" {
