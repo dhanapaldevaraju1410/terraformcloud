@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "us-west-1"
   }
 
 provider "google" {
   project     = "natural-region-452705-m6"
-  region      = "us-central1"
+  region      = "us-west-2"
 }
 
 resource "google_project_service" "storage_transfer" {
@@ -32,14 +32,14 @@ data "google_storage_transfer_project_service_account" "default" {
 
 resource "google_storage_bucket" "gcs_bucket" {
   count         = 2
-  name          = "gdhanap${count.index}"
+  name          = "gdhanapp${count.index}"
   location      = "US"
   storage_class = "STANDARD"
 }
 
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
-  bucket = "s3dha-${count.index}"
+  bucket = "s3dhal-${count.index}"
 }
 
 resource "google_storage_bucket_iam_member" "gcs_bucket" {
