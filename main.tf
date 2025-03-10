@@ -1,12 +1,6 @@
-provider "aws" {
-  region     = "us-west-2"
-  access_key = "my-access-key"
-  secret_key = "my-secret-key"
-}
-
 provider "google" {
-  project = "natural-region-452705-m6"
-  region  = "us-central1"
+  project     = "natural-region-452705-m6"
+  region      = "us-central1"
 }
 
 resource "google_project_service" "storage_transfer" {
