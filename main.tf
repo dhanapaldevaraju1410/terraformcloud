@@ -1,7 +1,6 @@
 provider "aws" {
   region  = "us-west-2"
-  version = "3.7.1"
-}
+  }
 
 provider "google" {
   project = "natural-region-452705-m6"
