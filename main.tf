@@ -62,6 +62,7 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   count       = 2
   description = "Transfer data from S3 to GCS"
   project     = "natural-region-452705-m6"
+}
 
   transfer_spec {
     aws_s3_data_source {
