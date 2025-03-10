@@ -1,6 +1,8 @@
 provider "aws" {
-  region = "us-west-1"
-  }
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  region     = var.aws_region
+}
 
 provider "google" {
   project     = "natural-region-452705-m6"
