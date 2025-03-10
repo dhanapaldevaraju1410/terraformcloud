@@ -82,12 +82,12 @@ schedule {
     schedule_start_date {
       year  = 2025
       month = 3
-      day   = 11
+      day   = 10
     }
 
     start_time_of_day {
-      hours   = 3
-      minutes = 45
+      hours   = 9
+      minutes = 10
       seconds = 0
       nanos   = 0
     }
