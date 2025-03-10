@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "us-west-2"
+  region     = "us-west-2"
 }
 
 provider "google" {
-  project = "natural-region-452705-m6"
-  region  = "us-central1"
+  project     = "natural-region-452705-m6"
+  region      = "us-central1"
 }
 
 resource "google_project_service" "storage_transfer" {
@@ -37,6 +37,7 @@ resource "google_storage_bucket" "gcs_bucket" {
   storage_class = "STANDARD"
 }
 
+
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
   bucket = "s3dha-${count.index}"
@@ -62,13 +63,15 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   count       = 2
   description = "Transfer data from S3 to GCS"
   project     = "natural-region-452705-m6"
-}
 
   transfer_spec {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
+      
+      }
+    }
 
-  gcs_data_sink {
+    gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
     }
   }
@@ -81,8 +84,8 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
     }
 
     start_time_of_day {
-      hours   = 6
-      minutes = 15
+      hours   = 3
+      minutes = 45
       seconds = 0
       nanos   = 0
     }
