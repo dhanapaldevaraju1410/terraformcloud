@@ -1,7 +1,5 @@
 provider "aws" {
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
-  region     = var.aws_region
+  region = us-west-1
 }
 
 provider "google" {
@@ -70,8 +68,8 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
 
       aws_access_key {
-        access_key_id     = var.aws_access_key
-        secret_access_key = var.aws_secret_key
+        access_key_id     = ""
+        secret_access_key = ""
       }
     }
 
