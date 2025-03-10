@@ -1,9 +1,3 @@
-provider "google" {
-  project     = "natural-region-452705-m6"
-  region      = "us-central1"
-  credentials = "${path.module}/credentials.json"
-}
-
 resource "google_project_service" "storage_transfer" {
   project = "natural-region-452705-m6"
   service = "storagetransfer.googleapis.com"
@@ -34,7 +28,6 @@ resource "google_storage_bucket" "gcs_bucket" {
   storage_class = "STANDARD"
 }
 
-
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
   bucket = "s3dha-${count.index}"
@@ -64,9 +57,7 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   transfer_spec {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
-}
     }
-
     gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
     }
@@ -76,7 +67,7 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
     schedule_start_date {
       year  = 2025
       month = 3
-      day   = 7
+      day   = 11
     }
 
     start_time_of_day {
