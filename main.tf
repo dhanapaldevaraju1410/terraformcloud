@@ -62,13 +62,18 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   count       = 2
   description = "Transfer data from S3 to GCS"
   project     = "natural-region-452705-m6"
-}
 
   transfer_spec {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
 
-  gcs_data_sink {
+      aws_access_key {
+        access_key_id     = var.aws_access_key
+        secret_access_key = var.aws_secret_key
+      }
+    }
+
+    gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
     }
   }
