@@ -1,10 +1,10 @@
 provider "aws" {
-  region     = "us-west-2"
+  region = "us-west-2"
 }
 
 provider "google" {
-  project     = "natural-region-452705-m6"
-  region      = "us-central1"
+  project = "natural-region-452705-m6"
+  region  = "us-central1"
 }
 
 resource "google_project_service" "storage_transfer" {
@@ -65,7 +65,9 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
 
   transfer_spec {
     aws_s3_data_source {
-      bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
+      bucket_name   = aws_s3_bucket.s3_bucket[count.index].bucket
+      aws_access_key = var.aws_access_key
+      aws_secret_key = var.aws_secret_key
     }
     gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
