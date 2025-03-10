@@ -40,6 +40,7 @@ resource "google_storage_bucket" "gcs_bucket" {
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
   bucket = "s3dha-${count.index}"
+}
 
 resource "google_storage_bucket_iam_member" "gcs_bucket" {
   for_each = { for idx, bucket in google_storage_bucket.gcs_bucket : bucket.name => bucket.name }
