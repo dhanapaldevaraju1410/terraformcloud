@@ -1,6 +1,11 @@
 provider "aws" {
-  region     = "us-west-2"
+  region = "us-west-2"
+  
+  assume_role {
+    role_arn     = "arn:aws:iam::TARGET_ACCOUNT_ID:role/YOUR_ROLE_NAME"
+    session_name = "TerraformSession"  # Optional, for session naming
   }
+}
 
 provider "google" {
   project     = "natural-region-452705-m6"
