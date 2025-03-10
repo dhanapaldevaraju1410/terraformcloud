@@ -41,6 +41,20 @@ resource "google_storage_bucket" "gcs_bucket" {
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
   bucket = "s3dha-${count.index}"
+
+  versioning {
+    enabled = true
+  }
+
+  object_lock_configuration {
+    object_lock_enabled = "Enabled"
+    rule {
+      default_retention {
+        mode  = "GOVERNANCE"
+        days  = 1
+      }
+    }
+  }
 }
 
 resource "google_storage_bucket_iam_member" "gcs_bucket" {
