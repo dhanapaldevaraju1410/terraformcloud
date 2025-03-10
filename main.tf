@@ -13,7 +13,7 @@ resource "google_project_service" "storage_transfer" {
 }
 
 resource "google_pubsub_topic" "transfer_notifications" {
-  name    = "pubsub1414"
+  name    = "pubsub1419"
   project = "natural-region-452705-m6"
 }
 
