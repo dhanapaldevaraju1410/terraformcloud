@@ -69,10 +69,11 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
       aws_access_key      = var.aws_access_key
       aws_secret_key      = var.aws_secret_key
     }
+}
     gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
     }
-  }
+  
 
   schedule {
     schedule_start_date {
