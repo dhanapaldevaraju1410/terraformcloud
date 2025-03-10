@@ -11,48 +11,6 @@ provider "aws" {
   region = "us-west-2"
 }
 
-resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "my-bucket"
-  acl    = "private"
-
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
-  lifecycle_rule {
-    id      = "log"
-    enabled = true
-
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA"
-    }
-
-    expiration {
-      days = 365
-    }
-  }
-}
-
-resource "aws_s3_bucket_object_lock_configuration" "s3_bucket_lock" {
-  bucket = aws_s3_bucket.s3_bucket.bucket
-
-  rule {
-    default_retention {
-      mode = "GOVERNANCE"
-      days = 30
-    }
-  }
-}
-
 provider "google" {
   project = "natural-region-452705-m6"
   region  = "us-central1"
