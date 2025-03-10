@@ -63,18 +63,21 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   description = "Transfer data from S3 to GCS"
   project     = "natural-region-452705-m6"
 
-  transfer_spec {
+transfer_spec {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
-}
-}
+      aws_access_key {
+        access_key_id     = ""
+        secret_access_key = ""
+      }
+    }
 
     gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
     }
   }
 
-schedule {
+  schedule {
     schedule_start_date {
       year  = 2025
       month = 3
@@ -83,10 +86,16 @@ schedule {
 
     start_time_of_day {
       hours   = 9
-      minutes = 10
+      minutes = 30
       seconds = 0
       nanos   = 0
     }
+  }
+
+  notification_config {
+    pubsub_topic   = google_pubsub_topic.transfer_notifications.id
+    event_types    = ["TRANSFER_OPERATION_SUCCESS", "TRANSFER_OPERATION_FAILED"]
+    payload_format = "JSON"
   }
 
   depends_on = [
@@ -95,3 +104,7 @@ schedule {
     google_pubsub_topic.transfer_notifications
   ]
 }
+
+  
+
+
