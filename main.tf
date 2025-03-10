@@ -1,8 +1,11 @@
-provider "aws" {
-  region = "us-west-2"
-  version = "5.90.0"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.90.0"
+    }
+  }
 }
-
 provider "google" {
   project = "natural-region-452705-m6"
   region  = "us-central1"
