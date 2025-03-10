@@ -78,6 +78,21 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
     }
   }
 
+schedule {
+    schedule_start_date {
+      year  = 2025
+      month = 3
+      day   = 11
+    }
+
+    start_time_of_day {
+      hours   = 3
+      minutes = 45
+      seconds = 0
+      nanos   = 0
+    }
+  }
+
   depends_on = [
     aws_s3_bucket.s3_bucket,
     google_storage_bucket.gcs_bucket,
