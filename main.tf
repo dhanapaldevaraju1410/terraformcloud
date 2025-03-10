@@ -1,3 +1,12 @@
+provider "aws" {
+  region     = "us-west-2"
+}
+
+provider "google" {
+  project     = "natural-region-452705-m6"
+  region      = "us-central1"
+}
+
 resource "google_project_service" "storage_transfer" {
   project = "natural-region-452705-m6"
   service = "storagetransfer.googleapis.com"
