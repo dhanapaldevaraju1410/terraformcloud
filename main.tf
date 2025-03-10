@@ -1,10 +1,10 @@
 provider "aws" {
-  region     = "us-west-2"
+  region = "us-west-2"
 }
 
 provider "google" {
-  project     = "natural-region-452705-m6"
-  region      = "us-central1"
+  project = "natural-region-452705-m6"
+  region  = "us-central1"
 }
 
 resource "google_project_service" "storage_transfer" {
@@ -37,7 +37,6 @@ resource "google_storage_bucket" "gcs_bucket" {
   storage_class = "STANDARD"
 }
 
-
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
   bucket = "s3dha-${count.index}"
@@ -67,34 +66,16 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   transfer_spec {
     aws_s3_data_source {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
-      
+
+      aws_access_key {
+        access_key_id     = "your_aws_access_key"
+        secret_access_key = "your_aws_secret_key"
       }
     }
 
     gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
     }
-  }
-
-  schedule {
-    schedule_start_date {
-      year  = 2025
-      month = 3
-      day   = 11
-    }
-
-    start_time_of_day {
-      hours   = 3
-      minutes = 45
-      seconds = 0
-      nanos   = 0
-    }
-  }
-
-  notification_config {
-    pubsub_topic   = google_pubsub_topic.transfer_notifications.id
-    event_types    = ["TRANSFER_OPERATION_SUCCESS", "TRANSFER_OPERATION_FAILED"]
-    payload_format = "JSON"
   }
 
   depends_on = [
