@@ -1,4 +1,9 @@
-variable "aws_role_arn" {
-  description = "AWS Role ARN"
+variable "aws_access_key" {
+  description = "AWS Access Key"
+  type        = string
+}
+
+variable "aws_secret_key" {
+  description = "AWS Secret Key"
   type        = string
 }
