@@ -1,10 +1,13 @@
 provider "aws" {
-  region = "us-west-1"
+  region     = "us-west-2"
+  access_key = "AKIAZI2LIKSNJT3EFXFT"
+  secret_key = "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"
 }
 
 provider "google" {
   project     = "natural-region-452705-m6"
-  region      = "us-west-2"
+  region      = "us-central1"
+  credentials = "${path.module}/credentials.json"
 }
 
 resource "google_project_service" "storage_transfer" {
@@ -13,7 +16,7 @@ resource "google_project_service" "storage_transfer" {
 }
 
 resource "google_pubsub_topic" "transfer_notifications" {
-  name    = "pubsub1419"
+  name    = "pubsub1414"
   project = "natural-region-452705-m6"
 }
 
@@ -32,14 +35,15 @@ data "google_storage_transfer_project_service_account" "default" {
 
 resource "google_storage_bucket" "gcs_bucket" {
   count         = 2
-  name          = "gcloudbuc1${count.index}"
+  name          = "gdhanap${count.index}"
   location      = "US"
   storage_class = "STANDARD"
 }
 
+
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
-  bucket = "s3cloudbuc1-${count.index}"
+  bucket = "s3dha-${count.index}"
 }
 
 resource "google_storage_bucket_iam_member" "gcs_bucket" {
@@ -63,18 +67,14 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   description = "Transfer data from S3 to GCS"
   project     = "natural-region-452705-m6"
 
-transfer_spec {
+  transfer_spec {
     aws_s3_data_source {
-        bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
-
-        aws_access_key {
-            access_key_id     = "AKIAZI2LIKSNK3S2YMCS"
-            secret_access_key = "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"
-        }
-
-        
+      bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
+      aws_access_key {
+        access_key_id     = "AKIAZI2LIKSNJT3EFXFT"
+        secret_access_key = "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"
+      }
     }
-}
 
     gcs_data_sink {
       bucket_name = google_storage_bucket.gcs_bucket[count.index].name
@@ -85,7 +85,7 @@ transfer_spec {
     schedule_start_date {
       year  = 2025
       month = 3
-      day   = 10
+      day   = 12
     }
 
     start_time_of_day {
@@ -107,12 +107,4 @@ transfer_spec {
     google_storage_bucket.gcs_bucket,
     google_pubsub_topic.transfer_notifications
   ]
-}
-
-resource "google_storage_bucket_iam_member" "source_bucket_admin" {
-  for_each = { for idx, bucket in aws_s3_bucket.s3_bucket : bucket.bucket => bucket.bucket }
-  bucket   = each.key
-  role     = "roles/storage.admin"
-  member   = "serviceAccount:${data.google_storage_transfer_project_service_account.default.email}"
-  depends_on = [aws_s3_bucket.s3_bucket, data.google_storage_transfer_project_service_account.default]
 }
