@@ -13,12 +13,11 @@ resource "google_project_service" "storage_transfer" {
   project = "natural-region-452705-m6"
   service = "storagetransfer.googleapis.com"
 }
-/*
+
 resource "google_pubsub_topic" "transfer_notifications" {
-  name    = "pubsub1414"
+  name    = "pubsub1415"
   project = "natural-region-452705-m6"
 }
-*/
 
 resource "google_pubsub_topic_iam_member" "publisher" {
   project = "natural-region-452705-m6"
