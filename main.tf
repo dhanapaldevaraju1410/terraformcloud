@@ -72,7 +72,7 @@ transfer_spec {
             secret_access_key = "HtWs59whWe7aYh6WT1nAKIgkrHV0xY58BcNe9QJq"
         }
 
-        arn = "arn:aws:iam::637423604890:user/trans14"
+        
     }
 }
 
