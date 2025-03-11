@@ -68,8 +68,8 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
       bucket_name = aws_s3_bucket.s3_bucket[count.index].bucket
 
       aws_access_key {
-        access_key_id     = "AKIAZI2LIKSNP6W5LRHR"
-        secret_access_key = "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"
+        access_key_id     = "AKIAZI2LIKSNFCC23NCF"
+        secret_access_key = "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"
       }
     }
 
