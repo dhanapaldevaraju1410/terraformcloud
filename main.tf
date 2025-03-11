@@ -89,7 +89,7 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
 
     start_time_of_day {
       hours   = 7
-      minutes = 40
+      minutes = 45
       seconds = 0
       nanos   = 0
     }
