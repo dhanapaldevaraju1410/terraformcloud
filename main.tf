@@ -32,14 +32,14 @@ data "google_storage_transfer_project_service_account" "default" {
 
 resource "google_storage_bucket" "gcs_bucket" {
   count         = 2
-  name          = "gdhanapp${count.index}"
+  name          = "gcloudbuc1${count.index}"
   location      = "US"
   storage_class = "STANDARD"
 }
 
 resource "aws_s3_bucket" "s3_bucket" {
   count  = 2
-  bucket = "s3dhal-${count.index}"
+  bucket = "s3cloudbuc1-${count.index}"
 }
 
 resource "google_storage_bucket_iam_member" "gcs_bucket" {
