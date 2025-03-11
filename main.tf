@@ -106,7 +106,10 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
   ]
 }
 
-
-  
-
-
+resource "google_storage_bucket_iam_member" "source_bucket_admin" {
+  for_each = { for idx, bucket in aws_s3_bucket.s3_bucket : bucket.bucket => bucket.bucket }
+  bucket   = each.key
+  role     = "roles/storage.admin"
+  member   = "serviceAccount:${data.google_storage_transfer_project_service_account.default.email}"
+  depends_on = [aws_s3_bucket.s3_bucket, data.google_storage_transfer_project_service_account.default]
+}
