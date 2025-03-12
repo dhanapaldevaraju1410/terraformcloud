@@ -84,7 +84,7 @@ resource "google_storage_transfer_job" "s3_to_gcs" {
     schedule_start_date {
       year  = 2025
       month = 3
-      day   = 11
+      day   = 13
     }
 
     start_time_of_day {
