@@ -38,3 +38,99 @@ variable "network" {
   type        = string
   default     = "default"
 }
+
+variable "disk_name" {
+  description = "Name of the disk"
+  type        = string
+  default     = "my-disk"
+}
+
+variable "disk_type" {
+  description = "Type of the disk"
+  type        = string
+  default     = "pd-standard"
+}
+
+variable "zone" {
+  description = "Zone for the resources"
+  type        = string
+  default     = "us-central1-a"
+}
+
+variable "disk_size" {
+  description = "Size of the disk"
+  type        = number
+  default     = 50
+}
+
+variable "instance_template_name" {
+  description = "Name of the instance template"
+  type        = string
+  default     = "appserver-template"
+}
+
+variable "instance_template_description" {
+  description = "Description of the instance template"
+  type        = string
+  default     = "This template is used to create app server instances."
+}
+
+variable "machine_type" {
+  description = "Machine type for the instance template"
+  type        = string
+  default     = "e2-medium"
+}
+
+variable "network" {
+  description = "Network for the instance"
+  type        = string
+  default     = "default"
+}
+
+variable "source_image" {
+  description = "Source image for the boot disk"
+  type        = string
+  default     = "debian-cloud/debian-11"
+}
+
+variable "auto_delete" {
+  description = "Whether the boot disk should be auto-deleted"
+  type        = bool
+  default     = true
+}
+
+variable "boot" {
+  description = "Whether the disk is a boot disk"
+  type        = bool
+  default     = true
+}
+
+variable "auto_delete_secondary" {
+  description = "Whether the secondary disk should be auto-deleted"
+  type        = bool
+  default     = false
+}
+
+variable "boot_secondary" {
+  description = "Whether the secondary disk is a boot disk"
+  type        = bool
+  default     = false
+}
+
+variable "snapshot_name" {
+  description = "Name of the snapshot"
+  type        = string
+  default     = "my-snapshot"
+}
+
+variable "storage_locations" {
+  description = "Storage locations for the snapshot"
+  type        = list(string)
+  default     = ["us-central1"]
+}
+
+variable "instance_name" {
+  description = "Name of the instance created from the template"
+  type        = string
+  default     = "instance-from-template"
+}
