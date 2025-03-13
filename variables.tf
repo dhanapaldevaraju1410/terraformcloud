@@ -51,12 +51,6 @@ variable "disk_type" {
   default     = "pd-standard"
 }
 
-variable "zone" {
-  description = "Zone for the resources"
-  type        = string
-  default     = "us-central1-a"
-}
-
 variable "disk_size" {
   description = "Size of the disk"
   type        = number
@@ -79,18 +73,6 @@ variable "machine_type" {
   description = "Machine type for the instance template"
   type        = string
   default     = "e2-medium"
-}
-
-variable "network" {
-  description = "Network for the instance"
-  type        = string
-  default     = "default"
-}
-
-variable "source_image" {
-  description = "Source image for the boot disk"
-  type        = string
-  default     = "debian-cloud/debian-11"
 }
 
 variable "auto_delete" {
