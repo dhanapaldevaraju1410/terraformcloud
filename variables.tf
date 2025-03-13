@@ -69,12 +69,6 @@ variable "instance_template_description" {
   default     = "This template is used to create app server instances."
 }
 
-variable "machine_type" {
-  description = "Machine type for the instance template"
-  type        = string
-  default     = "e2-medium"
-}
-
 variable "auto_delete" {
   description = "Whether the boot disk should be auto-deleted"
   type        = bool
