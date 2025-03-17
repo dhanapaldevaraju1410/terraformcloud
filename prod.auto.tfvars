@@ -1,0 +1,14 @@
+project_id     = "natural-region-452705-m6"
+region         = "us-central1"
+zone           = "us-central1-a"
+instance_name  = "nginx-server"
+machine_type   = "e2-micro"
+image          = "debian-cloud/debian-11"
+network        = "default"
+instance_tags  = ["http-server", "https-server"]
+ssh_username   = "your-ssh-username"
+ssh_public_key = "your-ssh-public-key"
+firewall_name  = "allow-http-https"
+allowed_ports  = [80, 443]
+source_ranges  = ["0.0.0.0/0"]
+project   = "My Project 25"
