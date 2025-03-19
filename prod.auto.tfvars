@@ -26,3 +26,4 @@ custom_request_headers   = ["X-Client-Geo-Location: {client_region_subdivision},
 custom_response_headers  = ["X-Cache-Hit: {cdn_cache_status}"]
 source_ranges            = ["0.0.0.0/0"]
 target_tags              = ["allow-health-check"]
+instance_group_name = "mymanager"
