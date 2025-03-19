@@ -1,3 +1,8 @@
+variable "base_instance_name" {
+  description = "The base instance name for the instance group manager"
+  type        = string
+}
+
 variable "project" {
   description = "The GCP project ID"
   type        = string
