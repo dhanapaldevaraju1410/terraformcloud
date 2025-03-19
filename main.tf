@@ -1,176 +1,121 @@
-resource "google_project_service" "compute" {
-  project = var.project
-  service = "compute.googleapis.com"
+# VPC
+resource "google_compute_network" "googlevpc" {
+  name                    = var.vpc_name
+  auto_create_subnetworks = var.auto_create_subnetworks
 }
 
-resource "google_project_service" "serviceusage" {
-  project = var.project
-  service = "serviceusage.googleapis.com"
-}
-
-resource "google_compute_network" "myvpc" {
-  name                    = var.network_name
-  provider                = google
-  auto_create_subnetworks = false
-}
-
-resource "google_compute_subnetwork" "mysubnet" {
+# backend subnet
+resource "google_compute_subnetwork" "googlesubnet" {
   name          = var.subnet_name
-  provider      = google
-  ip_cidr_range = var.ip_cidr_range
+  ip_cidr_range = var.subnet_ip_cidr_range
   region        = var.region
-  network       = google_compute_network.myvpc.id
+  network       = google_compute_network.googlevpc.id
 }
 
-resource "google_compute_global_address" "myip" {
-  provider = google
-  name     = var.global_address_name
+# reserved IP address
+resource "google_compute_global_address" "reservedip" {
+  name = var.reserved_ip_name
 }
 
-resource "google_compute_global_forwarding_rule" "myforwardingrule" {
+# forwarding rule
+resource "google_compute_global_forwarding_rule" "gcpforward" {
   name                  = var.forwarding_rule_name
-  provider              = google
-  ip_protocol           = "TCP"
+  ip_protocol           = var.ip_protocol
   load_balancing_scheme = var.load_balancing_scheme
   port_range            = var.port_range
-  target                = google_compute_target_http_proxy.myproxy.id
-  ip_address            = google_compute_global_address.myip.id
+  target                = google_compute_target_http_proxy.googleproxy.id
+  ip_address            = google_compute_global_address.reservedip.id
 }
 
-resource "google_compute_target_http_proxy" "myproxy" {
-  name     = var.proxy_name
-  provider = google
-  url_map  = google_compute_url_map.myurlmap.id
+# http proxy
+resource "google_compute_target_http_proxy" "googleproxy" {
+  name    = var.http_proxy_name
+  url_map = google_compute_url_map.gcpurlmap.id
 }
 
-resource "google_compute_url_map" "myurlmap" {
+# url map
+resource "google_compute_url_map" "gcpurlmap" {
   name            = var.url_map_name
-  provider        = google
-  default_service = google_compute_backend_service.mybackend.id
+  default_service = google_compute_backend_service.gcpbackend.id
 }
 
-resource "google_compute_backend_service" "mybackend" {
+# backend service with custom request and response headers
+resource "google_compute_backend_service" "gcpbackend" {
   name                    = var.backend_service_name
-  provider                = google
-  protocol                = var.protocol
-  port_name               = var.port_name
-  load_balancing_scheme   = var.load_balancing_scheme
-  timeout_sec             = var.timeout_sec
-  enable_cdn              = true
-  custom_request_headers  = var.custom_request_headers
-  custom_response_headers = var.custom_response_headers
-  health_checks           = [google_compute_health_check.mycheck.id]
+  protocol                = var.backend_protocol
+  port_name               = var.backend_port_name
+  load_balancing_scheme   = var.backend_load_balancing_scheme
+  timeout_sec             = var.backend_timeout_sec
+  enable_cdn              = var.backend_enable_cdn
+  custom_request_headers  = var.backend_custom_request_headers
+  custom_response_headers = var.backend_custom_response_headers
+  health_checks           = [google_compute_health_check.gcphealth.id]
   backend {
-    group           = google_compute_instance_group_manager.mymanager.instance_group
-    balancing_mode  = "UTILIZATION"
-    capacity_scaler = 1.0
+    group           = google_compute_instance_group_manager.googlegm.instance_group
+    balancing_mode  = var.backend_balancing_mode
+    capacity_scaler = var.backend_capacity_scaler
   }
 }
 
-resource "google_compute_instance_template" "mytemplate" {
+# instance template
+resource "google_compute_instance_template" "instancetemplate" {
   name         = var.instance_template_name
-  provider     = google
-  machine_type = var.machine_type
-  tags         = var.target_tags
+  machine_type = var.instance_machine_type
+  tags         = var.instance_tags
 
   network_interface {
-    network    = google_compute_network.myvpc.id
-    subnetwork = google_compute_subnetwork.mysubnet.id
+    network    = google_compute_network.googlevpc.id
+    subnetwork = google_compute_subnetwork.googlesubnet.id
     access_config {
       # add external ip to fetch packages
     }
   }
   disk {
-    source_image = var.source_image
-    auto_delete  = true
-    boot         = true
+    source_image = var.instance_source_image
+    auto_delete  = var.instance_auto_delete
+    boot         = var.instance_boot
   }
 
-  # install nginx and serve a simple web page
   metadata = {
-    startup-script = <<-EOF1
-      #! /bin/bash
-      set -euo pipefail
-
-      export DEBIAN_FRONTEND=noninteractive
-      apt-get update
-      apt-get install -y nginx-light jq
-
-      NAME=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/hostname")
-      IP=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip")
-      METADATA=$(curl -f -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/?recursive=True" | jq 'del(.["startup-script"])')
-
-      cat <<EOF > /var/www/html/index.html
-      <pre>
-      Name: $NAME
-      IP: $IP
-      Metadata: $METADATA
-      </pre>
-      EOF
-    EOF1
+    startup-script = var.instance_startup_script
   }
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = var.instance_create_before_destroy
   }
 }
 
-resource "google_compute_health_check" "mycheck" {
-  name     = var.health_check_name
-  provider = google
+# health check
+resource "google_compute_health_check" "gcphealth" {
+  name = var.health_check_name
   http_health_check {
-    port_specification = "USE_SERVING_PORT"
+    port_specification = var.health_check_port_specification
   }
 }
 
-resource "google_compute_instance_group_manager" "mymanager" {
-  name               = var.instance_group_manager_name
-  provider           = google
-  zone               = var.zone
-  base_instance_name = var.base_instance_name
+# MIG
+resource "google_compute_instance_group_manager" "googlegm" {
+  name     = var.instance_group_manager_name
+  zone     = var.instance_group_manager_zone
   named_port {
-    name = "http"
-    port = 8080
+    name = var.instance_group_manager_named_port_name
+    port = var.instance_group_manager_named_port
   }
   version {
-    instance_template = google_compute_instance_template.mytemplate.id
-    name              = "primary"
+    instance_template = google_compute_instance_template.instancetemplate.id
+    name              = var.instance_group_manager_version_name
   }
-  target_size = var.target_size
+  base_instance_name = var.instance_group_manager_base_instance_name
+  target_size        = var.instance_group_manager_target_size
 }
 
-resource "google_compute_instance_group" "mymanager" {
-  name = var.instance_group_name
-  zone = var.zone
-
-  named_port {
-    name = "my-port"
-    port = 8080
+# allow access from health check ranges
+resource "google_compute_firewall" "gcpfirewall" {
+  name          = var.firewall_name
+  direction     = var.firewall_direction
+  network       = google_compute_network.googlevpc.id
+  source_ranges = var.firewall_source_ranges
+  allow {
+    protocol = var.firewall_protocol
   }
-
-  named_port {
-    name = "https"
-    port = 443
-  }
-}
-
-resource "google_compute_backend_service" "default" {
-  name                  = "backend-service"
-  protocol              = "HTTP"
-  load_balancing_scheme = "EXTERNAL"
-  backend {
-    group = google_compute_instance_group.mymanager.self_link
-  }
-  port_name = "my-port"
-  health_checks = [google_compute_health_check.default.self_link]
-}
-
-resource "google_compute_health_check" "default" {
-  name                = "health-check"
-  check_interval_sec  = 10
-  timeout_sec         = 5
-  healthy_threshold   = 2
-  unhealthy_threshold = 2
-  http_health_check {
-    port = 8080
-  }
+  target_tags = var.firewall_target_tags
 }
