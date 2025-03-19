@@ -133,3 +133,4 @@ resource "google_compute_instance_group_manager" "mymanager" {
   version {
     instance_template = google_compute_instance_template.mytemplate
 }
+}
