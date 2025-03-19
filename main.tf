@@ -123,14 +123,17 @@ resource "google_compute_health_check" "mycheck" {
 }
 
 resource "google_compute_instance_group_manager" "mymanager" {
-  name     = var.instance_group_manager_name
-  provider = google
-  zone     = var.zone
+  name               = var.instance_group_manager_name
+  provider           = google
+  zone               = var.zone
+  base_instance_name = var.base_instance_name
   named_port {
     name = "http"
     port = 8080
   }
   version {
-    instance_template = google_compute_instance_template.mytemplate
-}
+    instance_template = google_compute_instance_template.mytemplate.id
+    name              = "primary"
+  }
+  target_size = var.target_size
 }
