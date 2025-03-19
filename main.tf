@@ -80,7 +80,7 @@ resource "google_compute_instance_template" "instancetemplate" {
     startup-script = var.instance_startup_script
   }
   lifecycle {
-    create_before_destroy = var.instance_create_before_destroy
+    create_before_destroy = true
   }
 }
 
