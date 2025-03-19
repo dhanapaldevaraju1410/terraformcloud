@@ -1,3 +1,8 @@
+variable "instance_group_name" {
+  description = "Name of the instance group"
+  type        = string
+}
+
 variable "base_instance_name" {
   description = "The base instance name for the instance group manager"
   type        = string
