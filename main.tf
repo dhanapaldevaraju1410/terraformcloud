@@ -137,3 +137,40 @@ resource "google_compute_instance_group_manager" "mymanager" {
   }
   target_size = var.target_size
 }
+
+resource "google_compute_instance_group" "mymanager" {
+  name = var.instance_group_name
+  zone = var.zone
+
+  named_port {
+    name = "my-port"
+    port = 8080
+  }
+
+  named_port {
+    name = "https"
+    port = 443
+  }
+}
+
+resource "google_compute_backend_service" "default" {
+  name                  = "backend-service"
+  protocol              = "HTTP"
+  load_balancing_scheme = "EXTERNAL"
+  backend {
+    group = google_compute_instance_group.mymanager.self_link
+  }
+  port_name = "my-port"
+  health_checks = [google_compute_health_check.default.self_link]
+}
+
+resource "google_compute_health_check" "default" {
+  name                = "health-check"
+  check_interval_sec  = 10
+  timeout_sec         = 5
+  healthy_threshold   = 2
+  unhealthy_threshold = 2
+  http_health_check {
+    port = 8080
+  }
+}
