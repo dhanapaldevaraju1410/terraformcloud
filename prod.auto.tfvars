@@ -3,6 +3,7 @@ region                   = "us-central1"
 credentials              = "./credentials.json"
 ip_cidr_range            = "10.0.1.0/24"
 machine_type             = "e2-small"
+base_instance_name = "vm"
 source_image             = "debian-cloud/debian-12"
 zone                     = "us-central1-c"
 target_size              = 2
