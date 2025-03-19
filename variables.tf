@@ -13,11 +13,6 @@ variable "region" {
   type        = string
 }
 
-variable "credentials" {
-  description = "Path to the GCP credentials file"
-  type        = string
-}
-
 variable "ip_cidr_range" {
   description = "The IP CIDR range for the subnet"
   type        = string
