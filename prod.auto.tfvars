@@ -1,6 +1,5 @@
 project                  = "natural-region-452705-m6"
 region                   = "us-central1"
-credentials              = "./credentials.json"
 ip_cidr_range            = "10.0.1.0/24"
 machine_type             = "e2-small"
 base_instance_name = "vm"
